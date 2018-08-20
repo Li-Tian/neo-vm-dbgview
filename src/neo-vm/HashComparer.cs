@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DbgViewTR;
 
 namespace Neo.VM
 {
@@ -8,12 +9,14 @@ namespace Neo.VM
     {
         public bool Equals(byte[] x, byte[] y)
         {
-            return x.SequenceEqual(y);
+            TR.Enter();
+            return TR.Exit(x.SequenceEqual(y));
         }
 
         public int GetHashCode(byte[] obj)
         {
-            return BitConverter.ToInt32(obj, 0);
+            TR.Enter();
+            return TR.Exit(BitConverter.ToInt32(obj, 0));
         }
     }
 }

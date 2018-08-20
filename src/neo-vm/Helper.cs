@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using DbgViewTR;
 
 namespace Neo.VM
 {
@@ -8,11 +9,13 @@ namespace Neo.VM
     {
         public static byte[] ReadVarBytes(this BinaryReader reader, int max = 0X7fffffc7)
         {
-            return reader.ReadBytes((int)reader.ReadVarInt((ulong)max));
+            TR.Enter();
+            return TR.Exit(reader.ReadBytes((int)reader.ReadVarInt((ulong)max)));
         }
 
         public static ulong ReadVarInt(this BinaryReader reader, ulong max = ulong.MaxValue)
         {
+            TR.Enter();
             byte fb = reader.ReadByte();
             ulong value;
             if (fb == 0xFD)
@@ -23,25 +26,36 @@ namespace Neo.VM
                 value = reader.ReadUInt64();
             else
                 value = fb;
-            if (value > max) throw new FormatException();
-            return value;
+            if (value > max)
+            {
+                TR.Exit();
+                throw new FormatException();
+            }
+            return TR.Exit(value);
         }
 
         public static string ReadVarString(this BinaryReader reader)
         {
-            return Encoding.UTF8.GetString(reader.ReadVarBytes());
+            TR.Enter();
+            return TR.Exit(Encoding.UTF8.GetString(reader.ReadVarBytes()));
         }
 
         public static void WriteVarBytes(this BinaryWriter writer, byte[] value)
         {
+            TR.Enter();
             writer.WriteVarInt(value.Length);
             writer.Write(value);
+            TR.Exit();
         }
 
         public static void WriteVarInt(this BinaryWriter writer, long value)
         {
+            TR.Enter();
             if (value < 0)
+            {
+                TR.Exit();
                 throw new ArgumentOutOfRangeException();
+            }
             if (value < 0xFD)
             {
                 writer.Write((byte)value);
@@ -61,11 +75,14 @@ namespace Neo.VM
                 writer.Write((byte)0xFF);
                 writer.Write(value);
             }
+            TR.Exit();
         }
 
         public static void WriteVarString(this BinaryWriter writer, string value)
         {
+            TR.Enter();
             writer.WriteVarBytes(Encoding.UTF8.GetBytes(value));
+            TR.Exit();
         }
     }
 }

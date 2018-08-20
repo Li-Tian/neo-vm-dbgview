@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DbgViewTR;
 
 namespace Neo.VM
 {
@@ -12,53 +13,82 @@ namespace Neo.VM
 
         public void Clear()
         {
+            TR.Enter();
             list.Clear();
+            TR.Exit();
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return list.GetEnumerator();
+            TR.Enter();
+            return TR.Exit(list.GetEnumerator());
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            TR.Enter();
+            return TR.Exit(GetEnumerator());
         }
 
         public void Insert(int index, T item)
         {
-            if (index > list.Count) throw new InvalidOperationException();
+            TR.Enter();
+            if (index > list.Count)
+            {
+                TR.Exit();
+                throw new InvalidOperationException();
+            }
             list.Insert(list.Count - index, item);
+            TR.Exit();
         }
 
         public T Peek(int index = 0)
         {
-            if (index >= list.Count) throw new InvalidOperationException();
-            return list[list.Count - 1 - index];
+            TR.Enter();
+            if (index >= list.Count)
+            {
+                TR.Exit();
+                throw new InvalidOperationException();
+            }
+            return TR.Exit(list[list.Count - 1 - index]);
         }
 
         public T Pop()
         {
-            return Remove(0);
+            TR.Enter();
+            return TR.Exit(Remove(0));
         }
 
         public void Push(T item)
         {
+            TR.Enter();
             list.Add(item);
+            TR.Exit();
         }
 
         public T Remove(int index)
         {
-            if (index >= list.Count) throw new InvalidOperationException();
+            TR.Enter();
+            if (index >= list.Count)
+            {
+                TR.Exit();
+                throw new InvalidOperationException();
+            }
             T item = list[list.Count - index - 1];
             list.RemoveAt(list.Count - index - 1);
-            return item;
+            return TR.Exit(item);
         }
 
         public void Set(int index, T item)
         {
-            if (index >= list.Count) throw new InvalidOperationException();
+            TR.Enter();
+            if (index >= list.Count)
+            {
+                TR.Exit();
+                throw new InvalidOperationException();
+            }
             list[list.Count - index - 1] = item;
+            TR.Exit();
         }
     }
 }

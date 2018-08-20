@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using DbgViewTR;
 
 namespace Neo.VM
 {
@@ -39,24 +40,29 @@ namespace Neo.VM
 
         internal ExecutionContext(ExecutionEngine engine, byte[] script, bool push_only, HashSet<uint> break_points = null)
         {
+            TR.Enter();
             this.engine = engine;
             this.Script = script;
             this.PushOnly = push_only;
             this.OpReader = new BinaryReader(new MemoryStream(script, false));
             this.BreakPoints = break_points ?? new HashSet<uint>();
+            TR.Exit();
         }
 
         public ExecutionContext Clone()
         {
-            return new ExecutionContext(engine, Script, PushOnly, BreakPoints)
+            TR.Enter();
+            return TR.Exit(new ExecutionContext(engine, Script, PushOnly, BreakPoints)
             {
                 InstructionPointer = InstructionPointer
-            };
+            });
         }
 
         public void Dispose()
         {
+            TR.Enter();
             OpReader.Dispose();
+            TR.Exit();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
+using DbgViewTR;
 
 namespace Neo.VM.Types
 {
@@ -10,14 +11,17 @@ namespace Neo.VM.Types
 
         public Integer(BigInteger value)
         {
+            TR.Enter();
             this.value = value;
+            TR.Exit();
         }
 
         public override bool Equals(StackItem other)
         {
-            if (ReferenceEquals(this, other)) return true;
-            if (ReferenceEquals(null, other)) return false;
-            if (other is Integer i) return value == i.value;
+            TR.Enter();
+            if (ReferenceEquals(this, other)) return TR.Exit(true);
+            if (ReferenceEquals(null, other)) return TR.Exit(false);
+            if (other is Integer i) return TR.Exit(value == i.value);
             byte[] bytes_other;
             try
             {
@@ -25,24 +29,27 @@ namespace Neo.VM.Types
             }
             catch (NotSupportedException)
             {
-                return false;
+                return TR.Exit(false);
             }
-            return GetByteArray().SequenceEqual(bytes_other);
+            return TR.Exit(GetByteArray().SequenceEqual(bytes_other));
         }
 
         public override BigInteger GetBigInteger()
         {
-            return value;
+            TR.Enter();
+            return TR.Exit(value);
         }
 
         public override bool GetBoolean()
         {
-            return value != BigInteger.Zero;
+            TR.Enter();
+            return TR.Exit(value != BigInteger.Zero);
         }
 
         public override byte[] GetByteArray()
         {
-            return value.ToByteArray();
+            TR.Enter();
+            return TR.Exit(value.ToByteArray());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using DbgViewTR;
 
 namespace Neo.VM.Types
 {
@@ -8,31 +9,38 @@ namespace Neo.VM.Types
 
         public InteropInterface(IInteropInterface value)
         {
+            TR.Enter();
             this._object = value;
+            TR.Exit();
         }
 
         public override bool Equals(StackItem other)
         {
-            if (ReferenceEquals(this, other)) return true;
-            if (ReferenceEquals(null, other)) return false;
+            TR.Enter();
+            if (ReferenceEquals(this, other)) return TR.Exit(true);
+            if (ReferenceEquals(null, other)) return TR.Exit(false);
             InteropInterface i = other as InteropInterface;
-            if (i == null) return false;
-            return _object.Equals(i._object);
+            if (i == null) return TR.Exit(false);
+            return TR.Exit(_object.Equals(i._object));
         }
 
         public override bool GetBoolean()
         {
-            return _object != null;
+            TR.Enter();
+            return TR.Exit(_object != null);
         }
 
         public override byte[] GetByteArray()
         {
+            TR.Enter();
+            TR.Exit();
             throw new NotSupportedException();
         }
 
         public T GetInterface<T>() where T : class, IInteropInterface
         {
-            return _object as T;
+            TR.Enter();
+            return TR.Exit(_object as T);
         }
     }
 }

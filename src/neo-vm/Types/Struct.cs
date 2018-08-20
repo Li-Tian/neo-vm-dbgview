@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DbgViewTR;
 
 namespace Neo.VM.Types
 {
@@ -13,6 +14,7 @@ namespace Neo.VM.Types
 
         public StackItem Clone()
         {
+            TR.Enter();
             List<StackItem> newArray = new List<StackItem>(this._array.Count);
             for (var i = 0; i < _array.Count; i++)
             {
@@ -26,18 +28,19 @@ namespace Neo.VM.Types
                                              //其他的由于是固定值类型，不会改内部值，所以虽然需要复制，直接= 就行
                 }
             }
-            return new Struct(newArray);
+            return TR.Exit(new Struct(newArray));
         }
 
         public override bool Equals(StackItem other)
         {
-            if (ReferenceEquals(this, other)) return true;
-            if (ReferenceEquals(null, other)) return false;
+            TR.Enter();
+            if (ReferenceEquals(this, other)) return TR.Exit(true);
+            if (ReferenceEquals(null, other)) return TR.Exit(false);
             Struct a = other as Struct;
             if (a == null)
-                return false;
+                return TR.Exit(false);
             else
-                return _array.SequenceEqual(a._array);
+                return TR.Exit(_array.SequenceEqual(a._array));
         }
     }
 }

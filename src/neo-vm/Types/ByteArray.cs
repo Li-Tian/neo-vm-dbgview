@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using DbgViewTR;
 
 namespace Neo.VM.Types
 {
@@ -9,13 +10,16 @@ namespace Neo.VM.Types
 
         public ByteArray(byte[] value)
         {
+            TR.Enter();
             this.value = value;
+            TR.Exit();
         }
 
         public override bool Equals(StackItem other)
         {
-            if (ReferenceEquals(this, other)) return true;
-            if (ReferenceEquals(null, other)) return false;
+            TR.Enter();
+            if (ReferenceEquals(this, other)) return TR.Exit(true);
+            if (ReferenceEquals(null, other)) return TR.Exit(false);
             byte[] bytes_other;
             try
             {
@@ -23,14 +27,15 @@ namespace Neo.VM.Types
             }
             catch (NotSupportedException)
             {
-                return false;
+                return TR.Exit(false);
             }
-            return value.SequenceEqual(bytes_other);
+            return TR.Exit(value.SequenceEqual(bytes_other));
         }
 
         public override byte[] GetByteArray()
         {
-            return value;
+            TR.Enter();
+            return TR.Exit(value);
         }
     }
 }

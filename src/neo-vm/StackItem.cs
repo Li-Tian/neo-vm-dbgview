@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using Array = Neo.VM.Types.Array;
 using Boolean = Neo.VM.Types.Boolean;
-using DbgViewTR;
+using NoDbgViewTR;
 
 namespace Neo.VM
 {

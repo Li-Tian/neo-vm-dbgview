@@ -2,7 +2,7 @@
 using System.IO;
 using System.Numerics;
 using System.Text;
-using DbgViewTR;
+using NoDbgViewTR;
 
 namespace Neo.VM
 {

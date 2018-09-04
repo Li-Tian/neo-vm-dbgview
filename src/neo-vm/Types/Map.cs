@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DbgViewTR;
+using NoDbgViewTR;
 
 namespace Neo.VM.Types
 {

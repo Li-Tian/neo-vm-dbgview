@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -280,11 +279,11 @@ namespace DbgViewTR
 #if DEBUG
         private static void Log(DbgData dd, string format, params object[] args)
         {
-            var ignoreFiles = GetIgnoreFileSet();
-            if (ignoreFiles.Contains(dd.file_name?.ToLower()))
-            {
-                return;
-            }
+            //var ignoreFiles = GetIgnoreFileSet();
+            //if (ignoreFiles.Contains(dd.file_name?.ToLower()))
+            //{
+            //    return;
+            //}
             IndentKey ik = dd.GetIndentKey();
             IndentContext iu = IndentManager.GetInstance().Get(ik);
             if (format == "<")
@@ -316,33 +315,33 @@ namespace DbgViewTR
             }
         }
 
-        private static HashSet<string> ignoreFiles = null;
-        private static readonly Object locker = new Object();
+        //private static HashSet<string> ignoreFiles = null;
+        //private static readonly Object locker = new Object();
 
-        private static HashSet<string> GetIgnoreFileSet()
-        {
-            if (ignoreFiles == null)
-            {
-                lock (locker)
-                {
-                    if (ignoreFiles == null)
-                    {
-                        ignoreFiles = new HashSet<string>();
-                        try
-                        {
-                            IConfigurationSection section = new ConfigurationBuilder().AddJsonFile("dbgview_setting.json").Build().GetSection("DbgViewSetting");
-                            ignoreFiles.UnionWith(section.GetSection("IgnoreFiles").GetChildren().Select(p => p.Value.ToLower()).ToList());
-                            Debug.Print("[{0}] Ignore files loaded : {1}", project_key, ignoreFiles.Count);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.Print("[{0}] Exception : {1}", project_key, e.Message);
-                        }
-                    }
-                }
-            }
-            return ignoreFiles;
-        }
+        //private static HashSet<string> GetIgnoreFileSet()
+        //{
+        //    if (ignoreFiles == null)
+        //    {
+        //        lock (locker)
+        //        {
+        //            if (ignoreFiles == null)
+        //            {
+        //                ignoreFiles = new HashSet<string>();
+        //                try
+        //                {
+        //                    IConfigurationSection section = new ConfigurationBuilder().AddJsonFile("dbgview_setting.json").Build().GetSection("DbgViewSetting");
+        //                    ignoreFiles.UnionWith(section.GetSection("IgnoreFiles").GetChildren().Select(p => p.Value.ToLower()).ToList());
+        //                    Debug.Print("[{0}] Ignore files loaded : {1}", project_key, ignoreFiles.Count);
+        //                }
+        //                catch (Exception e)
+        //                {
+        //                    Debug.Print("[{0}] Exception : {1}", project_key, e.Message);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return ignoreFiles;
+        //}
 #endif
     }
 }

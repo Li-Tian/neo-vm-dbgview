@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
-using DbgViewTR;
+using NoDbgViewTR;
 
 namespace Neo.VM.Types
 {

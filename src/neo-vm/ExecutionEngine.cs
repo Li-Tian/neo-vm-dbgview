@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using VMArray = Neo.VM.Types.Array;
-using DbgViewTR;
+using NoDbgViewTR;
 
 namespace Neo.VM
 {
